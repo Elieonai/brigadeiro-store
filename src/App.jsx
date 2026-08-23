@@ -1,13 +1,20 @@
-
 import './index.css'
+import Header from './components/Header'
+import Hero from './components/Hero'
 
 function App() {
   return (
-    <div className="min-h-screen bg-amber-100 flex items-center justify-center">
-      <h1 className="text-4xl font-bold text-amber-900">
-        Brigadeiro Store
-      </h1>
-    </div>
+    <>
+      <Header />
+
+
+      <main
+        id="inicio"
+        className="min-h-screen bg-amber-50"
+      >
+      <Hero />
+      </main>
+    </>
   )
 }
 
