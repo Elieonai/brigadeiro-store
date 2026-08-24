@@ -4,10 +4,18 @@ import Header from './components/Header'
 import Hero from './components/Hero'
 import Products from './components/Products'
 import Cart from './components/Cart'
+import CustomerForm from './components/CustomerForm'
 
 function App() {
   const [cart, setCart] = useState([])
   const [isCartOpen, setIsCartOpen] = useState(false)
+  const [customer, setCustomer] = useState({
+  name: '',
+  phone: '',
+  address: '',
+  complement: '',
+  payment: '',
+})
 
   function handleAddToCart(product) {
     setCart((currentCart) => {
@@ -86,6 +94,12 @@ function App() {
       >
         <Hero />
         <Products onAddToCart={handleAddToCart} />
+        <div className="max-w-2xl mx-auto px-4 sm:px-6 py-20">
+          <CustomerForm
+            customer={customer}
+            setCustomer={setCustomer}
+          />
+        </div>
       </main>
     </>
   )
