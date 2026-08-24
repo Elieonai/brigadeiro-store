@@ -10,12 +10,12 @@ function App() {
   const [cart, setCart] = useState([])
   const [isCartOpen, setIsCartOpen] = useState(false)
   const [customer, setCustomer] = useState({
-  name: '',
-  phone: '',
-  address: '',
-  complement: '',
-  payment: '',
-})
+    name: '',
+    phone: '',
+    address: '',
+    complement: '',
+    payment: '',
+  })
 
   function handleAddToCart(product) {
     setCart((currentCart) => {
@@ -68,6 +68,55 @@ function App() {
     )
   }
 
+  function handleFinishOrder() {
+    if (cart.length === 0) {
+      alert('Adicione pelo menos um brigadeiro ao carrinho.')
+      return
+    }
+
+    const total = cart.reduce(
+      (sum, item) => sum + item.price * item.quantity,
+      0
+    )
+
+    const productsMessage = cart
+      .map((item) => {
+        const subtotal = item.price * item.quantity
+
+        return `${item.name}
+Quantidade: ${item.quantity}
+Subtotal: ${subtotal.toLocaleString('pt-BR', {
+          style: 'currency',
+          currency: 'BRL',
+        })}`
+      })
+      .join('\n\n')
+
+    const message = `Olá! Gostaria de fazer um pedido:
+
+${productsMessage}
+
+Total: ${total.toLocaleString('pt-BR', {
+      style: 'currency',
+      currency: 'BRL',
+    })}
+
+Dados do cliente:
+Nome: ${customer.name}
+Telefone: ${customer.phone}
+Endereço: ${customer.address}
+Complemento: ${customer.complement || 'Não informado'}
+Forma de pagamento: ${customer.payment}`
+
+    const encodedMessage = encodeURIComponent(message)
+
+    const phoneNumber = '5581988501888'
+
+    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`
+
+    window.open(whatsappUrl, '_blank')
+  }
+
   const cartCount = cart.reduce(
     (total, item) => total + item.quantity,
     0
@@ -98,6 +147,7 @@ function App() {
           <CustomerForm
             customer={customer}
             setCustomer={setCustomer}
+            onSubmit={handleFinishOrder}
           />
         </div>
       </main>
