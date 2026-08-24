@@ -1,15 +1,18 @@
 import { useState } from 'react'
 import './index.css'
+
 import Header from './components/Header'
 import Hero from './components/Hero'
 import Products from './components/Products'
 import Cart from './components/Cart'
 import CustomerForm from './components/CustomerForm'
 import AIRecommendation from './components/AIRecommendation'
+import Footer from './components/Footer'
 
 function App() {
   const [cart, setCart] = useState([])
   const [isCartOpen, setIsCartOpen] = useState(false)
+
   const [customer, setCustomer] = useState({
     name: '',
     phone: '',
@@ -32,7 +35,10 @@ function App() {
       if (existingProduct) {
         return currentCart.map((item) =>
           item.id === product.id
-            ? { ...item, quantity: item.quantity + 1 }
+            ? {
+                ...item,
+                quantity: item.quantity + 1,
+              }
             : item
         )
       }
@@ -46,11 +52,15 @@ function App() {
       ]
     })
   }
+
   function handleIncrease(id) {
     setCart((currentCart) =>
       currentCart.map((item) =>
         item.id === id
-          ? { ...item, quantity: item.quantity + 1 }
+          ? {
+              ...item,
+              quantity: item.quantity + 1,
+            }
           : item
       )
     )
@@ -61,7 +71,10 @@ function App() {
       currentCart
         .map((item) =>
           item.id === id
-            ? { ...item, quantity: item.quantity - 1 }
+            ? {
+                ...item,
+                quantity: item.quantity - 1,
+              }
             : item
         )
         .filter((item) => item.quantity > 0)
@@ -81,13 +94,15 @@ function App() {
     }
 
     const total = cart.reduce(
-      (sum, item) => sum + item.price * item.quantity,
+      (sum, item) =>
+        sum + item.price * item.quantity,
       0
     )
 
     const productsMessage = cart
       .map((item) => {
-        const subtotal = item.price * item.quantity
+        const subtotal =
+          item.price * item.quantity
 
         return `${item.name}
 Quantidade: ${item.quantity}
@@ -117,52 +132,76 @@ Cidade: ${customer.city} - ${customer.state}
 Complemento: ${customer.complement || 'Não informado'}
 Forma de pagamento: ${customer.payment}`
 
-    const encodedMessage = encodeURIComponent(message)
+    const encodedMessage =
+      encodeURIComponent(message)
 
     const phoneNumber = '5581988501888'
 
-    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`
+    const whatsappUrl =
+      `https://wa.me/${phoneNumber}?text=${encodedMessage}`
 
-    window.open(whatsappUrl, '_blank')
+    window.open(
+      whatsappUrl,
+      '_blank',
+      'noopener,noreferrer'
+    )
   }
 
   const cartCount = cart.reduce(
-    (total, item) => total + item.quantity,
+    (total, item) =>
+      total + item.quantity,
     0
   )
 
   return (
     <>
+      {/* HEADER */}
       <Header
         cartCount={cartCount}
-        onOpenCart={() => setIsCartOpen(true)}
+        onOpenCart={() =>
+          setIsCartOpen(true)
+        }
       />
+
+      {/* CARRINHO */}
       <Cart
         cart={cart}
         isOpen={isCartOpen}
-        onClose={() => setIsCartOpen(false)}
+        onClose={() =>
+          setIsCartOpen(false)
+        }
         onIncrease={handleIncrease}
         onDecrease={handleDecrease}
         onRemove={handleRemove}
       />
 
-      <main
-        id="inicio"
-        className="min-h-screen bg-amber-50"
-      >
+      {/* CONTEÚDO PRINCIPAL */}
+      <main className="min-h-screen bg-amber-50">
+
+        {/* HERO */}
         <Hero />
-        <Products onAddToCart={handleAddToCart} />
-        
+
+        {/* PRODUTOS */}
+        <Products
+          onAddToCart={handleAddToCart}
+        />
+
+        {/* ASSISTENTE IA */}
         <AIRecommendation />
 
-        <div className="max-w-2xl mx-auto px-4 sm:px-6 py-20">
+        {/* CHECKOUT */}
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 py-20">
           <CustomerForm
             customer={customer}
             setCustomer={setCustomer}
             onSubmit={handleFinishOrder}
           />
         </div>
+
       </main>
+
+      {/* FOOTER */}
+      <Footer />
     </>
   )
 }
