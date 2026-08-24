@@ -12,7 +12,12 @@ function App() {
   const [customer, setCustomer] = useState({
     name: '',
     phone: '',
+    cep: '',
     address: '',
+    number: '',
+    neighborhood: '',
+    city: '',
+    state: '',
     complement: '',
     payment: '',
   })
@@ -104,7 +109,10 @@ Total: ${total.toLocaleString('pt-BR', {
 Dados do cliente:
 Nome: ${customer.name}
 Telefone: ${customer.phone}
-Endereço: ${customer.address}
+CEP: ${customer.cep}
+Endereço: ${customer.address}, ${customer.number}
+Bairro: ${customer.neighborhood}
+Cidade: ${customer.city} - ${customer.state}
 Complemento: ${customer.complement || 'Não informado'}
 Forma de pagamento: ${customer.payment}`
 

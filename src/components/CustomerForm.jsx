@@ -2,6 +2,7 @@ import { useState } from 'react'
 
 function CustomerForm({ customer, setCustomer, onSubmit }) {
     const [errors, setErrors] = useState({})
+    const [isLoadingCep, setIsLoadingCep] = useState(false)
 
     function validateForm() {
         const newErrors = {}
@@ -14,8 +15,16 @@ function CustomerForm({ customer, setCustomer, onSubmit }) {
             newErrors.phone = 'Informe seu telefone.'
         }
 
+        if (!customer.cep.trim()) {
+            newErrors.cep = 'Informe seu CEP.'
+        }
+
         if (!customer.address.trim()) {
             newErrors.address = 'Informe seu endereço.'
+        }
+
+        if (!customer.number.trim()) {
+            newErrors.number = 'Informe o número.'
         }
 
         if (!customer.payment) {
@@ -36,15 +45,82 @@ function CustomerForm({ customer, setCustomer, onSubmit }) {
     function handleChange(event) {
         const { name, value } = event.target
 
+        let formattedValue = value
+
+        if (name === 'cep') {
+            formattedValue = value
+                .replace(/\D/g, '')
+                .replace(/^(\d{5})(\d)/, '$1-$2')
+                .slice(0, 9)
+        }
+
         setCustomer((currentCustomer) => ({
             ...currentCustomer,
-            [name]: value,
+            [name]: formattedValue,
         }))
 
         setErrors((currentErrors) => ({
             ...currentErrors,
             [name]: '',
         }))
+    }
+
+    async function handleCepBlur() {
+        const cep = customer.cep.replace(/\D/g, '')
+
+        if (cep.length !== 8) {
+            setErrors((currentErrors) => ({
+                ...currentErrors,
+                cep: 'CEP inválido. Digite 8 números.',
+            }))
+
+            return
+        }
+
+        try {
+            setIsLoadingCep(true)
+
+            const response = await fetch(
+                `https://viacep.com.br/ws/${cep}/json/`
+            )
+
+            if (!response.ok) {
+                throw new Error('Erro ao consultar CEP')
+            }
+
+            const data = await response.json()
+
+            if (data.erro) {
+                setErrors((currentErrors) => ({
+                    ...currentErrors,
+                    cep: 'CEP não encontrado.',
+                }))
+
+                return
+            }
+
+            setCustomer((currentCustomer) => ({
+                ...currentCustomer,
+                address: data.logradouro || '',
+                neighborhood: data.bairro || '',
+                city: data.localidade || '',
+                state: data.uf || '',
+            }))
+
+            setErrors((currentErrors) => ({
+                ...currentErrors,
+                cep: '',
+            }))
+        } catch (error) {
+            console.error(error)
+
+            setErrors((currentErrors) => ({
+                ...currentErrors,
+                cep: 'Não foi possível consultar o CEP.',
+            }))
+        } finally {
+            setIsLoadingCep(false)
+        }
     }
 
     return (
@@ -106,10 +182,43 @@ function CustomerForm({ customer, setCustomer, onSubmit }) {
 
                 <div>
                     <label
+                        htmlFor="cep"
+                        className="block text-sm font-semibold text-gray-700 mb-2"
+                    >
+                        CEP
+                    </label>
+
+                    <input
+                        id="cep"
+                        name="cep"
+                        type="text"
+                        value={customer.cep}
+                        onChange={handleChange}
+                        onBlur={handleCepBlur}
+                        placeholder="00000-000"
+                        maxLength={9}
+                        className="w-full border border-gray-300 rounded-xl px-4 py-3 outline-none focus:border-amber-500"
+                    />
+
+                    {isLoadingCep && (
+                        <p className="text-sm text-amber-700 mt-2">
+                            Buscando endereço...
+                        </p>
+                    )}
+
+                    {errors.cep && (
+                        <p className="text-sm text-red-600 mt-2">
+                            {errors.cep}
+                        </p>
+                    )}
+                </div>
+
+                <div>
+                    <label
                         htmlFor="address"
                         className="block text-sm font-semibold text-gray-700 mb-2"
                     >
-                        Endereço
+                        Rua
                     </label>
 
                     <input
@@ -118,7 +227,7 @@ function CustomerForm({ customer, setCustomer, onSubmit }) {
                         type="text"
                         value={customer.address}
                         onChange={handleChange}
-                        placeholder="Rua, número e bairro"
+                        placeholder="Rua"
                         className="w-full border border-gray-300 rounded-xl px-4 py-3 outline-none focus:border-amber-500"
                     />
 
@@ -127,6 +236,90 @@ function CustomerForm({ customer, setCustomer, onSubmit }) {
                             {errors.address}
                         </p>
                     )}
+                </div>
+
+                <div>
+                    <label
+                        htmlFor="number"
+                        className="block text-sm font-semibold text-gray-700 mb-2"
+                    >
+                        Número
+                    </label>
+
+                    <input
+                        id="number"
+                        name="number"
+                        type="text"
+                        value={customer.number}
+                        onChange={handleChange}
+                        placeholder="Número"
+                        className="w-full border border-gray-300 rounded-xl px-4 py-3 outline-none focus:border-amber-500"
+                    />
+
+                    {errors.number && (
+                        <p className="text-sm text-red-600 mt-2">
+                            {errors.number}
+                        </p>
+                    )}
+                </div>
+
+                <div>
+                    <label
+                        htmlFor="neighborhood"
+                        className="block text-sm font-semibold text-gray-700 mb-2"
+                    >
+                        Bairro
+                    </label>
+
+                    <input
+                        id="neighborhood"
+                        name="neighborhood"
+                        type="text"
+                        value={customer.neighborhood}
+                        onChange={handleChange}
+                        placeholder="Bairro"
+                        className="w-full border border-gray-300 rounded-xl px-4 py-3 outline-none focus:border-amber-500"
+                    />
+                </div>
+
+                <div className="grid sm:grid-cols-2 gap-4">
+                    <div>
+                        <label
+                            htmlFor="city"
+                            className="block text-sm font-semibold text-gray-700 mb-2"
+                        >
+                            Cidade
+                        </label>
+
+                        <input
+                            id="city"
+                            name="city"
+                            type="text"
+                            value={customer.city}
+                            onChange={handleChange}
+                            placeholder="Cidade"
+                            className="w-full border border-gray-300 rounded-xl px-4 py-3 outline-none focus:border-amber-500"
+                        />
+                    </div>
+
+                    <div>
+                        <label
+                            htmlFor="state"
+                            className="block text-sm font-semibold text-gray-700 mb-2"
+                        >
+                            Estado
+                        </label>
+
+                        <input
+                            id="state"
+                            name="state"
+                            type="text"
+                            value={customer.state}
+                            onChange={handleChange}
+                            placeholder="UF"
+                            className="w-full border border-gray-300 rounded-xl px-4 py-3 outline-none focus:border-amber-500"
+                        />
+                    </div>
                 </div>
 
                 <div>
