@@ -12,6 +12,11 @@ function Cart({
     return null
   }
 
+  const total = cart.reduce(
+    (sum, item) => sum + item.price * item.quantity,
+    0
+  )
+
   return (
     <>
       <div
@@ -39,54 +44,88 @@ function Cart({
             Seu carrinho está vazio.
           </p>
         ) : (
-          <div className="space-y-5">
-            {cart.map((item) => (
-              <div
-                key={item.id}
-                className="flex gap-4 border-b pb-5"
-              >
-                <img
-                  src={item.image}
-                  alt={item.name}
-                  className="w-20 h-20 object-cover rounded-xl"
-                />
+          <>
+            <div className="space-y-5">
+              {cart.map((item) => (
+                <div
+                  key={item.id}
+                  className="flex gap-4 border-b pb-5"
+                >
+                  <img
+                    src={item.image}
+                    alt={item.name}
+                    className="w-20 h-20 object-cover rounded-xl"
+                  />
 
-                <div className="flex-1">
-                  <h3 className="font-bold text-amber-950">
-                    {item.name}
-                  </h3>
+                  <div className="flex-1">
+                    <h3 className="font-bold text-amber-950">
+                      {item.name}
+                    </h3>
 
-                  <div className="flex items-center gap-3 mt-3">
-                    <button
-                      type="button"
-                      onClick={() => onDecrease(item.id)}
-                      className="p-1 border rounded"
-                    >
-                      <Minus size={16} />
-                    </button>
+                    <p className="text-sm text-gray-500 mt-1">
+                      {item.price.toLocaleString('pt-BR', {
+                        style: 'currency',
+                        currency: 'BRL',
+                      })}{' '}
+                      cada
+                    </p>
 
-                    <span>{item.quantity}</span>
+                    <div className="flex items-center gap-3 mt-3">
+                      <button
+                        type="button"
+                        onClick={() => onDecrease(item.id)}
+                        className="p-1 border rounded"
+                      >
+                        <Minus size={16} />
+                      </button>
 
-                    <button
-                      type="button"
-                      onClick={() => onIncrease(item.id)}
-                      className="p-1 border rounded"
-                    >
-                      <Plus size={16} />
-                    </button>
+                      <span>{item.quantity}</span>
 
-                    <button
-                      type="button"
-                      onClick={() => onRemove(item.id)}
-                      className="ml-auto text-red-600"
-                    >
-                      <Trash2 size={18} />
-                    </button>
+                      <button
+                        type="button"
+                        onClick={() => onIncrease(item.id)}
+                        className="p-1 border rounded"
+                      >
+                        <Plus size={16} />
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => onRemove(item.id)}
+                        className="ml-auto text-red-600"
+                      >
+                        <Trash2 size={18} />
+                      </button>
+                    </div>
+
+                    <p className="mt-3 font-semibold text-amber-800">
+                      Subtotal:{' '}
+                      {(item.price * item.quantity).toLocaleString(
+                        'pt-BR',
+                        {
+                          style: 'currency',
+                          currency: 'BRL',
+                        }
+                      )}
+                    </p>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+
+            <div className="border-t pt-5 mt-6 flex items-center justify-between">
+              <span className="text-lg font-semibold text-gray-700">
+                Total
+              </span>
+
+              <span className="text-2xl font-bold text-amber-950">
+                {total.toLocaleString('pt-BR', {
+                  style: 'currency',
+                  currency: 'BRL',
+                })}
+              </span>
+            </div>
+          </>
         )}
       </aside>
     </>
