@@ -52,7 +52,10 @@ function AIRecommendation() {
   }
 
   return (
-    <section className="bg-amber-50 py-20">
+    <section
+      id="assistente"
+      className="bg-amber-50 py-20"
+    >
       <div className="max-w-3xl mx-auto px-4 sm:px-6">
         <div className="bg-white border border-amber-100 rounded-3xl p-6 sm:p-8 shadow-sm">
 
@@ -60,13 +63,13 @@ function AIRecommendation() {
             <Sparkles className="text-amber-500" />
 
             <h2 className="text-2xl sm:text-3xl font-bold text-amber-950">
-              Assistente de Brigadeiros
+              Assistente de Trufas
             </h2>
           </div>
 
           <p className="text-gray-600 mb-6">
             Conte o que você procura e nossa IA ajuda você
-            a escolher os brigadeiros ideais.
+            a escolher as trufas ideais.
           </p>
 
           <textarea
@@ -75,7 +78,7 @@ function AIRecommendation() {
               setPreference(event.target.value)
               setError('')
             }}
-            placeholder="Ex: Quero brigadeiros para uma festa de 15 pessoas e prefiro sabores de chocolate."
+            placeholder="Ex: Quero trufas para uma festa de 15 pessoas e prefiro sabores de chocolate."
             rows={4}
             className="w-full border border-gray-300 rounded-xl px-4 py-3 outline-none resize-none focus:border-amber-500"
           />
@@ -105,7 +108,7 @@ function AIRecommendation() {
                 ✨ Recomendação
               </p>
 
-              <p className="text-gray-700">
+              <p className="text-gray-700 whitespace-pre-line">
                 {recommendation}
               </p>
             </div>

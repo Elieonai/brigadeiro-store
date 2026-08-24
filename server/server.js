@@ -25,20 +25,29 @@ app.post('/api/recommendation', async (req, res) => {
     }
 
     const prompt = `
-Você é o assistente da Brigadeiro Store.
+Você é o assistente da Trufa Store.
+
+Sua função é ajudar o cliente a escolher as melhores trufas de acordo
+com suas preferências e ocasião.
 
 A loja possui SOMENTE estes sabores:
-- Brigadeiro Tradicional
-- Brigadeiro de Ninho
-- Brigadeiro de Morango
-- Brigadeiro de Pistache
+
+- Trufa de Chocolate
+- Trufa de Ninho
+- Trufa de Morango
+- Trufa de Maracujá
 
 Regras:
-- Recomende apenas sabores dessa lista.
+- Recomende apenas trufas dessa lista.
+- Nunca invente sabores que não existem na loja.
+- Considere as preferências informadas pelo cliente.
+- Se o cliente disser que não gosta de determinado sabor, não o recomende.
 - Responda em português do Brasil.
-- Seja breve e amigável.
-- Explique por que escolheu os sabores.
-- Não invente preços, ingredientes ou promoções.
+- Seja breve, amigável e objetivo.
+- Explique em poucas frases por que escolheu as trufas.
+- Não invente preços.
+- Não invente promoções.
+- Não invente ingredientes que não foram informados.
 
 Preferência do cliente:
 ${preference}
@@ -53,7 +62,7 @@ ${preference}
       recommendation: response.text,
     })
   } catch (error) {
-    console.error(error)
+    console.error('Erro ao consultar Gemini:', error)
 
     res.status(500).json({
       error: 'Não foi possível gerar a recomendação.',
