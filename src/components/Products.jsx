@@ -1,7 +1,7 @@
 import products from '../data/products'
 import ProductCard from './ProductCard'
 
-function Products() {
+function Products({ onAddToCart }) {
   return (
     <section
       id="brigadeiros"
@@ -23,6 +23,7 @@ function Products() {
             <ProductCard
               key={product.id}
               product={product}
+              onAddToCart={onAddToCart}
             />
           ))}
         </div>
