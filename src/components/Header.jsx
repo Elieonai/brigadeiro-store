@@ -6,7 +6,7 @@ function Header({ cartCount, onOpenCart }) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between gap-4">
 
         <h1 className="text-lg sm:text-2xl font-bold leading-tight">
-          Brigadeiro Store
+          Trufa Store
         </h1>
 
         <nav className="hidden md:flex items-center gap-8">
@@ -18,17 +18,17 @@ function Header({ cartCount, onOpenCart }) {
           </a>
 
           <a
-            href="#brigadeiros"
+            href="#trufas"
             className="hover:text-amber-300 transition"
           >
-            Brigadeiros
+            Trufas
           </a>
 
           <a
-            href="#contato"
+            href="#assistente"
             className="hover:text-amber-300 transition"
           >
-            Contato
+            Assistente IA
           </a>
         </nav>
 

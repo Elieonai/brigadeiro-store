@@ -76,7 +76,7 @@ function App() {
 
   function handleFinishOrder() {
     if (cart.length === 0) {
-      alert('Adicione pelo menos um brigadeiro ao carrinho.')
+      alert('Adicione pelo menos uma trufa ao carrinho.')
       return
     }
 
