@@ -1,4 +1,4 @@
-function ProductCard({ product }) {
+function ProductCard({ product, onAddToCart }) {
   return (
     <article className="bg-white rounded-2xl shadow-sm overflow-hidden border border-amber-100 hover:shadow-md transition">
       <img
@@ -26,6 +26,7 @@ function ProductCard({ product }) {
 
           <button
             type="button"
+            onClick={() => onAddToCart(product)}
             className="bg-amber-500 text-amber-950 font-semibold px-4 py-2 rounded-xl hover:bg-amber-400 transition"
           >
             Adicionar
