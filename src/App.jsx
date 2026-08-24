@@ -5,6 +5,7 @@ import Hero from './components/Hero'
 import Products from './components/Products'
 import Cart from './components/Cart'
 import CustomerForm from './components/CustomerForm'
+import AIRecommendation from './components/AIRecommendation'
 
 function App() {
   const [cart, setCart] = useState([])
@@ -151,6 +152,9 @@ Forma de pagamento: ${customer.payment}`
       >
         <Hero />
         <Products onAddToCart={handleAddToCart} />
+        
+        <AIRecommendation />
+
         <div className="max-w-2xl mx-auto px-4 sm:px-6 py-20">
           <CustomerForm
             customer={customer}
