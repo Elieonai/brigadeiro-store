@@ -23,7 +23,9 @@ function CustomerForm({ onSubmit }) {
         let newValue = value
 
         if (name === 'cep') {
-            const numbers = value.replace(/\D/g, '').slice(0, 8)
+            const numbers = value
+                .replace(/\D/g, '')
+                .slice(0, 8)
 
             newValue = numbers.replace(
                 /^(\d{5})(\d)/,
@@ -45,6 +47,19 @@ function CustomerForm({ onSubmit }) {
     async function handleCepBlur() {
         const cep = customer.cep.replace(/\D/g, '')
 
+        // CEP OPCIONAL
+        // Se estiver vazio, não mostra erro
+        if (!cep) {
+            setErrors((currentErrors) => ({
+                ...currentErrors,
+                cep: '',
+            }))
+
+            return
+        }
+
+        // Se o cliente começar a preencher,
+        // o CEP precisa ter 8 números
         if (cep.length !== 8) {
             setErrors((currentErrors) => ({
                 ...currentErrors,
@@ -85,7 +100,10 @@ function CustomerForm({ onSubmit }) {
                 state: data.uf || '',
             }))
         } catch (error) {
-            console.error('Erro ao consultar CEP:', error)
+            console.error(
+                'Erro ao consultar CEP:',
+                error
+            )
 
             setErrors((currentErrors) => ({
                 ...currentErrors,
@@ -107,25 +125,38 @@ function CustomerForm({ onSubmit }) {
             newErrors.phone = 'Informe seu telefone.'
         }
 
-        if (!customer.cep.trim()) {
-            newErrors.cep = 'Informe seu CEP.'
+        // CEP NÃO É MAIS OBRIGATÓRIO
+        // Mas se estiver preenchido, precisa ser válido
+        if (customer.cep.trim()) {
+            const cepNumbers =
+                customer.cep.replace(/\D/g, '')
+
+            if (cepNumbers.length !== 8) {
+                newErrors.cep =
+                    'Informe um CEP válido.'
+            }
         }
 
         if (!customer.address.trim()) {
-            newErrors.address = 'Informe seu endereço.'
+            newErrors.address =
+                'Informe seu endereço.'
         }
 
         if (!customer.number.trim()) {
-            newErrors.number = 'Informe o número.'
+            newErrors.number =
+                'Informe o número.'
         }
 
         if (!customer.payment) {
-            newErrors.payment = 'Selecione a forma de pagamento.'
+            newErrors.payment =
+                'Selecione a forma de pagamento.'
         }
 
         setErrors(newErrors)
 
-        if (Object.keys(newErrors).length === 0) {
+        if (
+            Object.keys(newErrors).length === 0
+        ) {
             onSubmit(customer)
         }
     }
@@ -159,6 +190,7 @@ function CustomerForm({ onSubmit }) {
                         <span className="w-8 h-8 flex items-center justify-center bg-amber-100 rounded-lg">
                             👤
                         </span>
+
                         Informações pessoais
                     </h3>
 
@@ -215,6 +247,7 @@ function CustomerForm({ onSubmit }) {
                                 </p>
                             )}
                         </div>
+
                     </div>
                 </div>
 
@@ -225,6 +258,7 @@ function CustomerForm({ onSubmit }) {
                         <span className="w-8 h-8 flex items-center justify-center bg-amber-100 rounded-lg">
                             📍
                         </span>
+
                         Endereço de entrega
                     </h3>
 
@@ -232,11 +266,15 @@ function CustomerForm({ onSubmit }) {
 
                         {/* CEP */}
                         <div className="md:col-span-2">
+
                             <label
                                 htmlFor="cep"
                                 className="block text-sm font-semibold text-gray-700 mb-2"
                             >
-                                CEP
+                                CEP{' '}
+                                <span className="text-gray-400 font-normal">
+                                    (opcional)
+                                </span>
                             </label>
 
                             <input
@@ -246,10 +284,14 @@ function CustomerForm({ onSubmit }) {
                                 value={customer.cep}
                                 onChange={handleChange}
                                 onBlur={handleCepBlur}
-                                placeholder="00000-000"
+                                placeholder="00000-000 (opcional)"
                                 maxLength={9}
                                 className="w-full border border-gray-200 bg-white rounded-xl px-4 py-3 outline-none focus:border-amber-500 focus:ring-4 focus:ring-amber-100 transition"
                             />
+
+                            <p className="text-xs text-gray-400 mt-2">
+                                Se informar o CEP, o endereço será preenchido automaticamente.
+                            </p>
 
                             {isLoadingCep && (
                                 <p className="text-sm text-amber-700 mt-2">
@@ -262,6 +304,7 @@ function CustomerForm({ onSubmit }) {
                                     {errors.cep}
                                 </p>
                             )}
+
                         </div>
 
                         {/* NÚMERO */}
@@ -292,6 +335,7 @@ function CustomerForm({ onSubmit }) {
 
                         {/* RUA */}
                         <div className="md:col-span-3">
+
                             <label
                                 htmlFor="address"
                                 className="block text-sm font-semibold text-gray-700 mb-2"
@@ -396,6 +440,7 @@ function CustomerForm({ onSubmit }) {
                                 className="w-full border border-gray-200 bg-white rounded-xl px-4 py-3 outline-none focus:border-amber-500 focus:ring-4 focus:ring-amber-100 transition"
                             />
                         </div>
+
                     </div>
                 </div>
 
@@ -406,6 +451,7 @@ function CustomerForm({ onSubmit }) {
                         <span className="w-8 h-8 flex items-center justify-center bg-amber-100 rounded-lg">
                             💳
                         </span>
+
                         Pagamento
                     </h3>
 
@@ -445,6 +491,7 @@ function CustomerForm({ onSubmit }) {
                             {errors.payment}
                         </p>
                     )}
+
                 </div>
 
                 {/* BOTÃO */}
